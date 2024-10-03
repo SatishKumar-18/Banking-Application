@@ -20,8 +20,5 @@ public class PublicController {
         return new ResponseEntity<>("Working fine", HttpStatus.OK);
     }
 
-    @PostMapping("/create-account")
-    public BankResponse createAccount(@RequestBody UserRequest userRequest){
-        return userService.createAccount(userRequest);
-    }
+
 }

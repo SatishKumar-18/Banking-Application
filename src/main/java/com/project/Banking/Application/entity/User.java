@@ -4,6 +4,7 @@ import lombok.*;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigDecimal;
@@ -20,6 +21,7 @@ public class User {
     @Id
     private ObjectId id;
     private String name;
+    private String dateOfBirth;
     private String gender;
     private String address;
     private String city;
@@ -31,10 +33,9 @@ public class User {
     private String panNumber;
     private String email;
     private String phoneNumber;
-    @Indexed(unique = true)
-    private String accountNumber;
-    private BigDecimal accountBalance;
-    private String status;
-    private LocalDateTime createdAt;
 
+    @DBRef
+    private Account account;
+    @DBRef
+    private NetBanking netBanking;
 }

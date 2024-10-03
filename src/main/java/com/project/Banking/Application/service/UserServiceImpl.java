@@ -1,77 +1,47 @@
 package com.project.Banking.Application.service;
 
-import com.project.Banking.Application.dto.AccountsInfo;
-import com.project.Banking.Application.dto.BankResponse;
-import com.project.Banking.Application.dto.EmailDetails;
-import com.project.Banking.Application.dto.UserRequest;
 import com.project.Banking.Application.entity.User;
 import com.project.Banking.Application.repository.UserRepository;
-import com.project.Banking.Application.utils.AccountUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
+import java.util.List;
+import java.util.Optional;
+
 
 @Service
+@Slf4j
 public class UserServiceImpl implements UserService{
 
     @Autowired
     private UserRepository userRepo;
 
-    @Autowired
-    private EmailService emailService;
 
     @Override
-    public BankResponse createAccount(UserRequest userRequest) {
-        /*
-        * Creating an account - saving a new user into the database
-        */
-
-        try{
-            User newUser = User.builder()
-                    .name(userRequest.getName())
-                    .gender(userRequest.getGender())
-                    .address(userRequest.getAddress())
-                    .city(userRequest.getCity())
-                    .state(userRequest.getState())
-                    .aadharNumber(userRequest.getAadharNumber())
-                    .panNumber(userRequest.getPanNumber())
-                    .email(userRequest.getEmail())
-                    .phoneNumber(userRequest.getPhoneNumber())
-                    .accountNumber(AccountUtils.generateAccountNumber())
-                    .accountBalance(BigDecimal.ZERO)
-                    .status("ACTIVE")
-                    .build();
-
-            User savedUser = userRepo.save(newUser);
-
-            //sent an email
-            EmailDetails emailDetails = EmailDetails.builder()
-                    .recipient(savedUser.getEmail())
-                    .subject("Account Creation")
-                    .messageBody("Congratulations! Your Account has been successfully created.\nYour Account Details\n" +
-                            "Account Name:" + savedUser.getName() + "\nAccount Number: "+savedUser.getAccountNumber())
-                    .build();
-            emailService.sendEmailAlert(emailDetails);
-
-            return BankResponse.builder()
-                    .responseCode(AccountUtils.ACCOUNT_CREATED)
-                    .responseMessage(AccountUtils.ACCOUNT_CREATION_MESSAGE)
-                    .accountsInfo(AccountsInfo.builder()
-                            .accountName(savedUser.getName())
-                            .accountNumber(savedUser.getAccountNumber())
-                            .accountBalance(savedUser.getAccountBalance())
-                            .build())
-                    .build();
-
-        } catch(Exception e){
-            return BankResponse.builder()
-                    .responseCode(AccountUtils.ACCOUNT_EXISTS_CODE)
-                    .responseMessage(AccountUtils.ACCOUNT_EXISTS_MESSAGE)
-                    .accountsInfo(null)
-                    .build();
-        }
-
-
+    public User saveUser(User user) {
+        return userRepo.save(user);
     }
+
+    public String getAccountHolder(String accountNumber){
+        List<User> user = userRepo.findAll();
+        Optional<String> name = user.stream().filter(x -> x.getAccount().getAccountNumber().equals(accountNumber)).map(User::getName).findFirst();
+
+        return name.get();
+    }
+
+
+
+    @Override
+    public List<User> getAllUsers() {
+        return userRepo.findAll();
+    }
+
+    @Override
+    public User getUser(String accountNumber) {
+        List<User> user = userRepo.findAll();
+        return user.stream().filter(x -> x.getAccount().getAccountNumber().equals(accountNumber)).findFirst().orElse(null);
+    }
+
+
 }

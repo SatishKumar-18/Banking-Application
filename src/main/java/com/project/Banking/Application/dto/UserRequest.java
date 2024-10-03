@@ -11,6 +11,8 @@ public class UserRequest {
     @NonNull
     private String name;
     @NonNull
+    private String dateOfBirth;
+    @NonNull
     private String gender;
     @NonNull
     private String address;
@@ -28,5 +30,4 @@ public class UserRequest {
     private String email;
     @NonNull
     private String phoneNumber;
-    private String status;
 }
