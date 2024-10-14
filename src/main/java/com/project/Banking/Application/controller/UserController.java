@@ -1,34 +1,29 @@
 package com.project.Banking.Application.controller;
 
 import com.project.Banking.Application.dto.BankResponse;
-import com.project.Banking.Application.entity.User;
+import com.project.Banking.Application.dto.NetBankingRequest;
+import com.project.Banking.Application.dto.NetBankingResponse;
+import com.project.Banking.Application.service.AccountService;
 import com.project.Banking.Application.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UserController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private AccountService accountService;
 
-    /*@GetMapping("/account-balance/{username}")
-    public ResponseEntity<BankResponse> getBalance(@PathVariable String username){
-        User user = userService.findByUsername(username);
-        if(user != null){
-            String accountNumber = user.getAccountNumber();
-            User accountHolder = userService.findByAccountNumber(accountNumber);
+    @PostMapping("/net-banking/create/account-number/{accountNumber}")
+    public NetBankingResponse crateNetBanking(@PathVariable String accountNumber, @RequestBody NetBankingRequest bankingRequest){
+        return userService.saveCredentials(accountNumber, bankingRequest);
+    }
 
-            BankResponse response = userService.balanceEnquiry(accountHolder);
-
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }*/
+    @GetMapping("/account-balance/{accountNumber}")
+    public BankResponse getBalance(@PathVariable String accountNumber){
+        return accountService.balanceEnquiry(accountNumber);
+    }
 }

@@ -1,12 +1,17 @@
 package com.project.Banking.Application.controller;
 
+import com.project.Banking.Application.dto.AdminResponse;
 import com.project.Banking.Application.dto.BankResponse;
+import com.project.Banking.Application.dto.EmployeeRequest;
 import com.project.Banking.Application.dto.UserRequest;
+import com.project.Banking.Application.entity.Employee;
 import com.project.Banking.Application.entity.User;
 import com.project.Banking.Application.service.AccountService;
 import com.project.Banking.Application.service.AdminService;
-import com.project.Banking.Application.service.UserService;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,9 +26,36 @@ public class AdminController {
     @Autowired
     private AccountService accountService;
 
+    @PostMapping("/employee/create-employee")
+    public AdminResponse createEmployee(@RequestBody EmployeeRequest employeeRequest){
+        return adminService.createEmployee(employeeRequest);
+    }
+
+    @GetMapping("/employee/get-all")
+    public ResponseEntity<?> getAllEmployee(){
+        List<Employee> allEmployee = adminService.getAllEmployee();
+
+        if(!allEmployee.isEmpty()){
+            return new ResponseEntity<>(allEmployee, HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping("/employee/get/id/{id}")
+    public ResponseEntity<?> getEmployeeById(@PathVariable ObjectId id){
+        Employee employeeById = adminService.getEmployeeById(id);
+
+        if(employeeById != null){
+            return new ResponseEntity<>(employeeById, HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
     @PostMapping("/create-account")
     public BankResponse createAccount(@RequestBody UserRequest userRequest){
-        return adminService.createAccount(userRequest);
+        return adminService.createCustomerAccount(userRequest);
     }
 
     @GetMapping("/account-balance/{accountNumber}")

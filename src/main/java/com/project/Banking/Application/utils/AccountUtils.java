@@ -16,6 +16,9 @@ public class AccountUtils {
     public static final String USER_NOT_FOUND_CODE = "004";
     public static final String USER_NOT_FOUND_MESSAGE = "Account not found";
 
+    public static final String NET_BANKING_CREATED_CODE="005";
+    public static final String NET_BANKING_CREATED_MESSAGE="Net-Banking account created successfully.";
+
     public static String generateAccountNumber(){
         /*
          * year + randomSixDigits

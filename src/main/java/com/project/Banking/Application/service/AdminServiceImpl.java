@@ -1,12 +1,13 @@
 package com.project.Banking.Application.service;
 
-import com.project.Banking.Application.dto.AccountsInfo;
-import com.project.Banking.Application.dto.BankResponse;
-import com.project.Banking.Application.dto.EmailDetails;
-import com.project.Banking.Application.dto.UserRequest;
+import com.project.Banking.Application.dto.*;
 import com.project.Banking.Application.entity.Account;
+import com.project.Banking.Application.entity.Employee;
 import com.project.Banking.Application.entity.User;
+import com.project.Banking.Application.repository.EmployeeRepository;
 import com.project.Banking.Application.utils.AccountUtils;
+import com.project.Banking.Application.utils.EmployeeUtils;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,9 +24,11 @@ public class AdminServiceImpl implements AdminService{
     private AccountService accountService;
     @Autowired
     private EmailService emailService;
+    @Autowired
+    private EmployeeRepository employeeRepo;
 
     @Override
-    public BankResponse createAccount(UserRequest userRequest) {
+    public BankResponse createCustomerAccount(UserRequest userRequest) {
         /*
          * Creating an account - saving a new user into the database
          */
@@ -92,6 +95,48 @@ public class AdminServiceImpl implements AdminService{
 
     @Override
     public User getUser(String accountNumber){
-        return userService.getUser(accountNumber);
+        return userService.getUserByAccountNumber(accountNumber);
     }
+
+    @Override
+    public AdminResponse createEmployee(EmployeeRequest employeeRequest) {
+       try{
+           Employee employee = Employee.builder()
+                   .name(employeeRequest.getName())
+                   .username(employeeRequest.getUsername())
+                   .password(employeeRequest.getPassword())
+                   .position(employeeRequest.getPosition())
+                   .build();
+
+           Employee savedEmployee = employeeRepo.save(employee);
+
+           return AdminResponse.builder()
+                   .responseCode(EmployeeUtils.EMPLOYEE_CREATED_CODE)
+                   .responseMessage(EmployeeUtils.EMPLOYEE_CREATED_MESSAGE)
+                   .employeeInfo(EmployeeInfo.builder()
+                           .employeeName(savedEmployee.getName())
+                           .username(savedEmployee.getUsername())
+                           .password(savedEmployee.getPassword())
+                           .build())
+                   .build();
+       }catch (Exception e){
+            return AdminResponse.builder()
+                    .responseCode(EmployeeUtils.EMPLOYEE_CREATION_FAILED_CODE)
+                    .responseMessage(EmployeeUtils.EMPLOYEE_CREATION_FAILED_MESSAGE)
+                    .employeeInfo(null)
+                    .build();
+       }
+    }
+
+    @Override
+    public List<Employee> getAllEmployee() {
+        return employeeRepo.findAll();
+    }
+
+    @Override
+    public Employee getEmployeeById(ObjectId id) {
+        return employeeRepo.findById(id).orElse(null);
+    }
+
+
 }
