@@ -3,7 +3,9 @@ package com.project.Banking.Application.service;
 import com.project.Banking.Application.entity.NetBanking;
 import com.project.Banking.Application.repository.NetBankingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class NetBankingServiceImpl implements NetBankingService{
 
     @Autowired

@@ -1,12 +1,10 @@
 package com.project.Banking.Application.service;
 
-import com.project.Banking.Application.dto.BankResponse;
 import com.project.Banking.Application.dto.EmailDetails;
 import com.project.Banking.Application.dto.NetBankingRequest;
 import com.project.Banking.Application.dto.NetBankingResponse;
 import com.project.Banking.Application.entity.NetBanking;
 import com.project.Banking.Application.entity.User;
-import com.project.Banking.Application.repository.NetBankingRepository;
 import com.project.Banking.Application.repository.UserRepository;
 import com.project.Banking.Application.utils.AccountUtils;
 import lombok.extern.slf4j.Slf4j;

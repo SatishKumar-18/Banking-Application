@@ -1,13 +1,11 @@
 package com.project.Banking.Application.controller;
 
-import com.project.Banking.Application.dto.AdminResponse;
-import com.project.Banking.Application.dto.BankResponse;
-import com.project.Banking.Application.dto.EmployeeRequest;
-import com.project.Banking.Application.dto.UserRequest;
+import com.project.Banking.Application.dto.*;
 import com.project.Banking.Application.entity.Employee;
 import com.project.Banking.Application.entity.User;
 import com.project.Banking.Application.service.AccountService;
 import com.project.Banking.Application.service.AdminService;
+import com.project.Banking.Application.service.TransactionService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,6 +23,9 @@ public class AdminController {
 
     @Autowired
     private AccountService accountService;
+
+    @Autowired
+    private TransactionService transactionService;
 
     @PostMapping("/employee/create-employee")
     public AdminResponse createEmployee(@RequestBody EmployeeRequest employeeRequest){
@@ -72,5 +73,10 @@ public class AdminController {
     @GetMapping("/get-user/{accountNumber}")
     public User getUser(@PathVariable String accountNumber){
         return adminService.getUser(accountNumber);
+    }
+
+    @PostMapping("/transaction/{accountNumber}")
+    public TransactionResponse transaction(@PathVariable String accountNumber, @RequestBody TransactionRequest transactionRequest){
+        return transactionService.saveTransaction(accountNumber, transactionRequest);
     }
 }

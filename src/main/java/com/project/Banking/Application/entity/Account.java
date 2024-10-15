@@ -8,6 +8,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Document(collection = "accounts")
 @Getter
@@ -25,5 +27,5 @@ public class Account {
     private LocalDateTime createdAt;
 
     @DBRef
-    private Transaction transaction;
+    private List<Transaction> transaction = new ArrayList<>();
 }
